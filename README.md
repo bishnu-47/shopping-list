@@ -10,4 +10,5 @@ Simple shopping list app. (Made as a stater boiler plate for MERN apps).
     ```
     PORT=5000
     MONGO_URI=<secret mongoDb connection Uri>
+    NODE_ENV=<'production' or 'development'>
     ```

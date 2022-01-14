@@ -1,11 +1,13 @@
-import Item from "../../models/Item.js";
 import express from "express";
+import Item from "../../models/Item.js";
+import { auth } from "../../middleware/auth.js";
+
 const router = express.Router();
 
 // @route   GET /api/items
 // @desc   get all items
-// @access   public
-router.get("/", async (req, res) => {
+// @access   private
+router.get("/", auth, async (req, res) => {
   try {
     const items = await Item.find().sort({ date: -1 });
     res.status(200).json(items);
@@ -17,8 +19,8 @@ router.get("/", async (req, res) => {
 
 // @route   POST /api/items
 // @desc   create an item
-// @access   public
-router.post("/", async (req, res) => {
+// @access   private
+router.post("/", auth, async (req, res) => {
   const newItem = new Item({
     name: req.body.name,
   });
@@ -33,8 +35,8 @@ router.post("/", async (req, res) => {
 
 // @route   DELETE /api/items/:id
 // @desc   delete an item
-// @access   public
-router.delete("/:id", async (req, res) => {
+// @access   private
+router.delete("/:id", auth, async (req, res) => {
   try {
     const item = await Item.findById(req.params.id);
 

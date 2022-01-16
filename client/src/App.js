@@ -1,23 +1,23 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { Routes, Route } from "react-router-dom";
 
-import { fetchList } from "./redux/shoppingListSlice";
-import Navbar from "./components/Navbar";
-import ShopingListForm from "./components/ShopingListForm";
+import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/LoginPage";
+import Home from "./pages/Home";
+
+import Alerts from "./components/Alerts";
 
 const App = () => {
-  const { loading } = useSelector((state) => state.shoppingList);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchList());
-  }, []);
-
   return (
-    <>
-      <Navbar />
-      {loading ? <p>Loading</p> : <ShopingListForm />}
-    </>
+    <div className="h-screen">
+      <Routes>
+        <Route path="/register" element={<RegisterPage />} exact />
+        <Route path="/login" element={<LoginPage />} exact />
+        <Route path="/" element={<Home />} exact />
+      </Routes>
+
+      <Alerts />
+    </div>
   );
 };
 

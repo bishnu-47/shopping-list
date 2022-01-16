@@ -4,12 +4,21 @@ import axios from "axios";
 export const fetchList = createAsyncThunk(
   "list/fetchList",
   async (_, thunkAPI) => {
+    const { auth } = thunkAPI.getState();
+
     try {
-      const response = await axios.get("/api/items");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      };
+
+      const response = await axios.get("/api/items", config);
       return response.data;
     } catch (err) {
-      console.log(err);
-      return thunkAPI.rejectWithValue({ error: err.message });
+      if (err.response)
+        return thunkAPI.rejectWithValue({ error: err.response.data.msg });
+      else return thunkAPI.rejectWithValue({ error: err.message });
     }
   }
 );
@@ -17,14 +26,27 @@ export const fetchList = createAsyncThunk(
 export const addItem = createAsyncThunk(
   "list/addItem",
   async (name, thunkAPI) => {
+    const { auth } = thunkAPI.getState();
+
     try {
-      const response = await axios.post("/api/items", {
-        name,
-      });
+      const config = {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      };
+
+      const response = await axios.post(
+        "/api/items",
+        {
+          name,
+        },
+        config
+      );
       return response.data;
     } catch (err) {
-      console.log(err);
-      return thunkAPI.rejectWithValue({ error: err.message });
+      if (err.response)
+        return thunkAPI.rejectWithValue({ error: err.response.data.msg });
+      else return thunkAPI.rejectWithValue({ error: err.message });
     }
   }
 );
@@ -32,12 +54,21 @@ export const addItem = createAsyncThunk(
 export const removeItem = createAsyncThunk(
   "list/removeItem",
   async ({ id }, thunkAPI) => {
+    const { auth } = thunkAPI.getState();
+
     try {
-      const response = await axios.delete(`/api/items/${id}`);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      };
+
+      const response = await axios.delete(`/api/items/${id}`, config);
       return response.data;
     } catch (err) {
-      console.log(err);
-      return thunkAPI.rejectWithValue({ error: err.message });
+      if (err.response)
+        return thunkAPI.rejectWithValue({ error: err.response.data.msg });
+      else return thunkAPI.rejectWithValue({ error: err.message });
     }
   }
 );
@@ -45,7 +76,6 @@ export const removeItem = createAsyncThunk(
 const initialState = {
   list: [],
   loading: true,
-  error: "",
 };
 
 export const shoppingListSlice = createSlice({
@@ -59,13 +89,9 @@ export const shoppingListSlice = createSlice({
       state.loading = false;
     });
 
-    builder.addCase(fetchList.rejected, (state, action) => {
-      state.error = action.error;
-    });
-
     // add Item
-    builder.addCase(addItem.fulfilled, (state, action) => {
-      state.list = [action.payload, ...state.list];
+    builder.addCase(addItem.fulfilled, (state, { payload }) => {
+      state.list = [payload, ...state.list];
     });
 
     // remove Item
@@ -74,7 +100,5 @@ export const shoppingListSlice = createSlice({
     });
   },
 });
-
-export const { add, remove } = shoppingListSlice.actions;
 
 export default shoppingListSlice.reducer;

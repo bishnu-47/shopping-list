@@ -9,10 +9,10 @@ const router = express.Router();
 // @access   private
 router.get("/", auth, async (req, res) => {
   try {
-    const items = await Item.find().sort({ date: -1 });
+    const items = await Item.find({ email: req.user.email }).sort({ date: -1 });
     res.status(200).json(items);
   } catch (err) {
-    res.status(500).json({ success: false });
+    res.status(500).json({ success: false, msg: error.message });
     console.log(err);
   }
 });
@@ -23,12 +23,14 @@ router.get("/", auth, async (req, res) => {
 router.post("/", auth, async (req, res) => {
   const newItem = new Item({
     name: req.body.name,
+    email: req.user.email,
   });
   try {
+    // save newItem
     await newItem.save();
     res.status(201).json(newItem);
   } catch (err) {
-    res.status(500).json({ success: false });
+    res.status(500).json({ success: false, msg: err.message });
     console.log(err);
   }
 });
@@ -45,7 +47,7 @@ router.delete("/:id", auth, async (req, res) => {
     const queryRes = await Item.deleteOne(item);
     res.status(200).json({ _id: req.params.id });
   } catch (err) {
-    res.status(500).json({ success: false });
+    res.status(500).json({ success: false, msg: error.message });
     console.log(err);
   }
 });

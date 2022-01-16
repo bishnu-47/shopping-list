@@ -14,13 +14,13 @@ export const auth = async (req, res, next) => {
   try {
     // verify jwt token
     jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-      if (err) throw err;
+      if (err) return res.status(401).json({ msg: "Invalid Authorization!" });
 
       // find user based on decoded data
       const user = await User.findById(decoded.id);
 
       // if no user found
-      if (!user) return res.status(401).json({ msg: "Invalid Authorization!" });
+      if (!user) return res.status(401).json({ msg: "Not Authorized!" });
 
       // add the data to request for routes
       req.user = user;

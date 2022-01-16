@@ -8,6 +8,10 @@ const ItemSchema = new Schema({
     type: String,
     requried: true,
   },
+  email: {
+    type: String,
+    requried: true,
+  },
   date: {
     type: Date,
     default: Date.now,

@@ -55,6 +55,7 @@ router.post("/register", async (req, res) => {
             name: newUser.name,
             email: newUser.email,
           },
+          msg: "Registration Successful.",
         });
       }
     );
@@ -104,6 +105,7 @@ router.post("/login", async (req, res) => {
             name: user.name,
             email: user.email,
           },
+          msg: "Logged In.",
         });
       }
     );

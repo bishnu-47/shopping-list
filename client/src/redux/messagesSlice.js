@@ -42,8 +42,16 @@ export const messagesSlice = createSlice({
   },
   extraReducers: (builder) => {
     // auth actions
+    builder.addCase(registerUser.fulfilled, (state, { payload }) => {
+      state.error = payload.msg;
+    });
+
     builder.addCase(registerUser.rejected, (state, { payload }) => {
       state.error = payload.error;
+    });
+
+    builder.addCase(loginUser.fulfilled, (state, { payload }) => {
+      state.error = payload.msg;
     });
 
     builder.addCase(loginUser.rejected, (state, { payload }) => {
